@@ -1,22 +1,19 @@
 <template>
     <div class="pokemonList">
         <h1>Cartes Pokémon TCG Pocket</h1>
-
         <div v-if="loading">Chargement...</div>
-
         <div v-else class="cardsDisplay">
             <div v-if="error" class="error">{{ error }}</div>
             <div v-else-if="cards.length === 0">Aucune carte trouvée.</div>
             <div v-else class="cardsGrid">
-                <div v-for="card in cards" :key="card.id" class="card">
-                    <router-link :to="{ name: 'CardDetails', params: { id: card.id } }">
+                <div v-for="card in cards" :key="card.id" class="card"> <router-link
+                        :to="{ name: 'CardDetails', params: { id: card.id } }">
                         <div class="cardImage" :style="{ backgroundImage: `url(${card.image})` }"></div>
                         <div class="cardInfo">
                             <h3>{{ card.name }}</h3>
                             <p>{{ card.set }}</p>
                         </div>
-                    </router-link>
-                </div>
+                    </router-link> </div>
             </div>
         </div>
     </div>
@@ -26,18 +23,7 @@
 import './PokemonDetails.css'
 
 export default {
-    name: 'PokemonDetails',
-    data() {
-        return {
-            cards: [],
-            loading: true,
-            error: null
-        }
-    },
-    mounted() {
-        this.fetchPokemonCards()
-    },
-    methods: {
+    name: 'PokemonDetails', data() { return { cards: [], loading: true, error: null } }, mounted() { this.fetchPokemonCards() }, methods: {
         async fetchPokemonCards() {
             try {
                 this.loading = true
@@ -48,7 +34,7 @@ export default {
                 const setsResponse = await fetch('https://api.tcgdex.net/v2/en/sets')
                 const sets = await setsResponse.json()
 
-                // Filtrer Pocket via ID
+                // Filtrer Pocket via ID 
                 const pocketSets = sets.filter(set => {
                     const id = set.id?.toLowerCase() || ''
 
@@ -57,26 +43,24 @@ export default {
 
                 console.log("Sets Pocket détectés:", pocketSets)
 
-                const cardRequests = pocketSets.map(set =>
-                    fetch(`https://api.tcgdex.net/v2/en/cards?set=${set.id}`)
-                        .then(res => res.json())
-                        .then(cards => ({ cards, setName: set.name }))
+                // Récupérer tous les sets en parallèle 
+                const setRequests = pocketSets.map(set => fetch(`https://api.tcgdex.net/v2/en/sets/${set.id}`)
+                    .then(res => res.json())
+                    .then(data => ({ data, setName: set.name }))
                 )
-
-                const results = await Promise.all(cardRequests)
-
+                const results = await Promise.all(setRequests)
+                
+                // Mapper toutes les cartes 
                 results.forEach(result => {
-
-                    const mapped = result.cards
-                        .filter(c => (c.supertype || c.category) === "Pokemon")
-                        .map(c => ({
+                    if (result.data.cards) {
+                        const mapped = result.data.cards.map(c => ({
                             id: c.id,
                             name: c.name,
                             image: c.image ? `${c.image}/high.webp` : '',
                             set: result.setName
                         }))
-
-                    this.cards.push(...mapped)
+                        this.cards.push(...mapped)
+                    }
                 })
 
                 if (this.cards.length === 0) {
