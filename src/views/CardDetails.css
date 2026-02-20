@@ -1,0 +1,188 @@
+.cardDetails {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cardDetails h1 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 32px;
+}
+
+.infoCarte {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    align-items: start;
+    position: relative;
+}
+
+/* Colonne gauche - Image et artiste */
+.art {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.imageCarte {
+    width: 100%;
+    height: auto;
+    background-color: #ddd;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.artisteCarte {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Colonne droite - Infos */
+.infos {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.infos h2 {
+    font-size: 28px;
+    margin: 0;
+}
+
+/* Stats générales */
+.statsCarte {
+    background-color: #012B66;
+    padding: 15px;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.statsCarte p {
+    margin: 0;
+    font-size: 14px;
+    color: #FED000;
+}
+
+/* Capacités */
+.abilitesCarte {
+    background-color: #012B66;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.abilitesCarte h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.capacite {
+    margin-bottom: 10px;
+}
+
+.capacite h4 {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+}
+
+.capacite p {
+    margin: 0;
+    font-size: 12px;
+}
+
+/* Attaques */
+.attaquesCarte {
+    background-color: #012B66;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.attaquesCarte h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #FED000;
+}
+
+.attaque {
+    margin-bottom: 15px;
+}
+
+.attaque h4 {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+}
+
+.attaque p {
+    margin: 3px 0;
+    font-size: 12px;
+}
+
+/* Coûts et faiblesse */
+.coutsCarte {
+    background-color: #012B66;
+    padding: 15px;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.coutsCarte p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* Description */
+.descriptionCarte {
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.descriptionCarte p {
+    margin: 0;
+}
+
+/* Type - boîte grise à droite */
+.typePokemon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #d0d0d0;
+    padding: 15px 25px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    min-width: 80px;
+}
+
+/* Gestion des erreurs */
+.error {
+    background-color: #fee;
+    color: #c00;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .infoCarte {
+        grid-template-columns: 1fr;
+    }
+    
+    .typePokemon {
+        position: static;
+        margin-top: 20px;
+    }
+    
+    .statsCarte,
+    .coutsCarte {
+        grid-template-columns: 1fr;
+    }
+}
