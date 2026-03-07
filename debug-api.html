@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug API</title>
+</head>
+<body>
+    <h1>Debug API tcgdex</h1>
+    <button onclick="testAPI()">Test API</button>
+    <pre id="output"></pre>
+
+    <script>
+        async function testAPI() {
+            try {
+                console.log("Fetching Pokemon cards...");
+                const response = await fetch('https://api.tcgdex.net/v2/en/cards?category=Pokemon');
+                const data = await response.json();
+                console.log("Full first card:", JSON.stringify(data[0], null, 2));
+                console.log("Second card:", JSON.stringify(data[1], null, 2));
+                
+                // Log des champs disponibles
+                if (data[0]) {
+                    console.log("Available fields in first card:", Object.keys(data[0]));
+                }
+
+                document.getElementById('output').innerHTML = `
+First card: ${JSON.stringify(data[0], null, 2)}
+---
+Second card: ${JSON.stringify(data[1], null, 2)}
+---
+Keys: ${data[0] ? Object.keys(data[0]).join(', ') : 'N/A'}
+                `;
+            } catch (err) {
+                console.error("Error:", err);
+                document.getElementById('output').innerHTML = `Error: ${err.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,7 +1,11 @@
 .pokemonList {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #242424;
 }
 
 .pokemonList h1 {
@@ -9,11 +13,29 @@
   font-size: 2rem;
   color: #FED000;
   background-color: #242424;
+  margin: 0;
+  padding: 20px 0;
 }
 
 .cardsDisplay {
     width: 100%;
     margin: 10px auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #FED000;
+  font-size: 18px;
+  background-color: #242424;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+  font-size: 16px;
+  background-color: #242424;
 }
 
 /* GRID */
@@ -27,7 +49,6 @@
 
 /* CARTE */
 .card {
-  background: #012B66;
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
@@ -40,6 +61,13 @@
 .card:hover {
   transform: translateY(-8px) scale(1.03);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card a {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* IMAGE */
@@ -59,7 +87,10 @@
 .cardInfo {
   padding: 12px;
   text-align: center;
-  background-color: #012B66;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .cardInfo h3 {
@@ -81,6 +112,8 @@
   margin-top: 12px;
   text-align: center;
   font-weight: 500;
+  padding: 20px;
+  background-color: #242424;
 }
 
 @media (min-width: 900px) {

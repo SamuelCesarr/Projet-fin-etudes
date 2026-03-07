@@ -5,6 +5,7 @@ import DefaultLayout from "../layouts/DefaultLayout.vue";
 import DetailsLayout from "../layouts/DetailsLayout.vue";
 import TrainerDetails from "../views/TrainerDetails.vue";
 import CardDetails from "../views/CardDetails.vue";
+import SetDetails from "../views/SetDetails.vue";
 
 const routes = [
     {
@@ -56,6 +57,23 @@ const routes = [
                 path: "/card/:id",
                 name: "CardDetails",
                 component: CardDetails,
+            }
+        ],
+    },
+    {
+        path: "/set",
+        name: "SetLayout",
+        component: DetailsLayout,
+        children: [
+            {
+                path: "",
+                name: "SetDetails",
+                component: SetDetails,
+            },
+            {
+                path: ":id",
+                name: "SetDetailsDetail",
+                component: SetDetails,
             }
         ],
     }

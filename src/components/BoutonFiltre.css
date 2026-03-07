@@ -1,0 +1,120 @@
+.filter-container {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #242424;
+}
+
+.filter-toggle {
+    background-color: #FED000;
+    color: #242424;
+    border: none;
+    padding: 10px 20px; 
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.filter-toggle:hover {
+    background-color: #ffed4e;
+    transform: scale(1.05);
+}
+
+.filter-panel {
+    margin-top: 16px;
+    padding: 16px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    border: 1px solid #444;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.filter-group {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #444;
+}
+
+.filter-group:last-of-type {
+    margin-bottom: 16px;
+    border-bottom: none;
+}
+
+.filter-group h4 {
+    margin: 0 0 12px 0;
+    color: #FED000;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.filter-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+}
+
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.filter-checkbox:hover {
+    background-color: #333;
+}
+
+.filter-checkbox input {
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: #FED000;
+}
+
+.filter-reset {
+    width: 100%;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.filter-reset:hover {
+    background-color: #c0392b;
+    transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+    .filter-options {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-panel {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+}

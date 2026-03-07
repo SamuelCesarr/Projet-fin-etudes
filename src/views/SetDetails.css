@@ -1,0 +1,211 @@
+.setContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #242424;
+}
+
+/* LISTE DES SETS */
+.setList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.setList h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #FED000;
+  background-color: #242424;
+  margin: 0;
+  padding: 20px 0;
+}
+
+.sets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  background-color: #242424;
+  width: 100%;
+}
+
+.set {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.set:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.set a {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.logoSet {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  background-color: #1a1a1a;
+  padding: 10px;
+}
+
+.set h2 {
+  margin: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #FED000;
+  text-align: center;
+}
+
+/* DETAIL DES CARTES D'UNE EXTENSION */
+.setCardsDetail {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.setHeader {
+  padding: 20px;
+  background-color: #242424;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.backButton {
+  color: #FED000;
+  text-decoration: none;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.backButton:hover {
+  background-color: #3a3a3a;
+  transform: translateX(-4px);
+}
+
+.setHeader h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #FED000;
+  flex-grow: 1;
+}
+
+.cardsDisplay {
+  width: 100%;
+  margin: 10px auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #FED000;
+  font-size: 18px;
+  background-color: #242424;
+}
+
+.error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #ff6b6b;
+  font-size: 16px;
+  background-color: #242424;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+  font-size: 16px;
+  background-color: #242424;
+}
+
+/* GRID DE CARTES */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  background-color: #242424;
+}
+
+/* CARTE */
+.card {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card a {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* IMAGE DE CARTE */
+.cardImage {
+  width: 100%;
+  padding-top: 140%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .cardImage {
+  transform: scale(1.05);
+}
+
+/* INFOS DE CARTE */
+.cardInfo {
+  padding: 12px;
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cardInfo h3 {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #FED000;
+  line-height: 1.3;
+}
+
+.cardInfo p {
+  margin: 0;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.cardType {
+  font-size: 11px;
+  color: #999;
+  font-style: italic;
+}

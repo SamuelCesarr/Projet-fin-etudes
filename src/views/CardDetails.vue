@@ -13,10 +13,10 @@
             <div class="infos">
                 <h2>{{ card.name }}</h2>
                 <div class="statsCarte">
-                    <p><strong>Catégorie:</strong> {{ card.category || 'N/A' }}</p>
-                    <p><strong>Stade:</strong> {{ card.stage || 'N/A' }}</p>
-                    <p><strong>HP:</strong> {{ card.hp || 'N/A' }}</p>
-                    <p><strong>Rareté:</strong> {{ card.rarity || 'N/A' }}</p>
+                    <p><h3>Catégorie:</h3> {{ card.category || 'N/A' }}</p>
+                    <p><h3>Stade:</h3> {{ card.stage || 'N/A' }}</p>
+                    <p><h3>HP:</h3> {{ card.hp || 'N/A' }}</p>
+                    <p><h3>Rareté:</h3> {{ card.rarity || 'N/A' }}</p>
                 </div>
 
                 <div v-if="card.abilities && card.abilities.length > 0" class="abilitesCarte">
