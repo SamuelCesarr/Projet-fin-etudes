@@ -11,7 +11,7 @@
                 <div class="filter-options">
                     <label v-for="rarity in rarities" :key="rarity" class="filter-checkbox">
                         <input type="checkbox" :value="rarity" v-model="localFilters.rarities">
-                        <span>{{ rarity }}</span>
+                        <span :title="rarity">{{ getRarityIcon(rarity) }}</span>
                     </label>
                 </div>
             </div>
@@ -22,7 +22,10 @@
                 <div class="filter-options">
                     <label v-for="type in types" :key="type" class="filter-checkbox">
                         <input type="checkbox" :value="type" v-model="localFilters.types">
-                        <span>{{ type }}</span>
+                        <span :title="type" class="type-with-icon">
+                            <img :src="getTypeIcon(type)" :alt="type" class="type-icon" />
+                            {{ type }}
+                        </span>
                     </label>
                 </div>
             </div>
@@ -53,13 +56,13 @@
                 </div>
             </div>
 
-            <!-- BOOSTER PACK -->
+            <!-- EXTENSION -->
             <div class="filter-group">
-                <h4>Booster Pack</h4>
+                <h4>Extension</h4>
                 <div class="filter-options">
                     <label v-for="pack in boosters" :key="pack" class="filter-checkbox">
                         <input type="checkbox" :value="pack" v-model="localFilters.boosters">
-                        <span>{{ pack }}</span>
+                        <span>{{ pack }} - {{ setMap[pack] || pack }}</span>
                     </label>
                 </div>
             </div>
@@ -83,6 +86,10 @@ export default {
         boosters: {
             type: Array,
             default: () => []
+        },
+        setMap: {
+            type: Object,
+            default: () => ({})
         },
         availableRarities: {
             type: Array,
@@ -108,14 +115,20 @@ export default {
     },
     computed: {
         rarities() {
-            return this.availableRarities.length > 0 
-                ? this.availableRarities.sort() 
-                : ['Common', 'Uncommon', 'Rare', 'Rare Holo']
+            const rarityOrder = ['None', 'One Diamond', 'Two Diamond', 'Three Diamond', 'Four Diamond', 'One Star', 'Two Star', 'Three Star', 'One Shiny', 'Two Shiny', 'Crown']
+            if (this.availableRarities.length > 0) {
+                return this.availableRarities.sort((a, b) => {
+                    const indexA = rarityOrder.indexOf(a)
+                    const indexB = rarityOrder.indexOf(b)
+                    return indexA - indexB
+                })
+            }
+            return rarityOrder
         },
         types() {
             return this.availableTypes.length > 0
-                ? this.availableTypes.sort()
-                : ['Grass', 'Fire', 'Water', 'Lightning', 'Psychic', 'Fighting', 'Darkness', 'Metal', 'Dragon', 'Colorless']
+                ? this.availableTypes.map(t => t === 'Lightning' ? 'Electric' : t)
+                : ['Grass', 'Fire', 'Water', 'Electric', 'Psychic', 'Fighting', 'Darkness', 'Metal', 'Dragon', 'Colorless']
         },
         stages() {
             return this.availableStages.length > 0
@@ -129,7 +142,7 @@ export default {
             handler(newVal) {
                 // Prop update coming from parent: copy without re-emitting
                 this.suppressEmit = true
-                this.localFilters = JSON.parse(JSON.stringify(newVal))
+                this.localFilters = { ...newVal, types: newVal.types.map(t => t === 'Lightning' ? 'Electric' : t) }
             }
         },
         localFilters: {
@@ -140,7 +153,8 @@ export default {
                     return
                 }
                 // Emit only when user changes localFilters
-                this.$emit('filters-changed', JSON.parse(JSON.stringify(newVal)))
+                const mappedFilters = { ...newVal, types: newVal.types.map(t => t === 'Electric' ? 'Lightning' : t) }
+                this.$emit('filters-changed', JSON.parse(JSON.stringify(mappedFilters)))
             }
         }
     },
@@ -154,6 +168,38 @@ export default {
             }
             this.$emit('reset-filters')
             this.showFilters = false
+        },
+        getRarityIcon(rarity) {
+            const rarityIcons = {
+                'None': 'None',
+                'One Diamond': '◇',
+                'Two Diamond': '◇◇',
+                'Three Diamond': '◇◇◇',
+                'Four Diamond': '◇◇◇◇',
+                'One Star': '★',
+                'Two Star': '★★',
+                'Three Star': '★★★',
+                'One Shiny': '✷',
+                'Two Shiny': '✷✷',
+                'Crown': '🜲'
+            }
+            return rarityIcons[rarity] || rarity
+        },
+        getTypeIcon(type) {
+            const typeNames = {
+                'Grass': 'grass',
+                'Fire': 'fire',
+                'Water': 'water',
+                'Electric': 'electric',
+                'Psychic': 'psychic',
+                'Fighting': 'fighting',
+                'Darkness': 'dark',
+                'Metal': 'steel',
+                'Dragon': 'dragon',
+                'Colorless': 'normal'
+            }
+            const typeName = typeNames[type] || 'normal'
+            return `https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/${typeName}.svg`
         }
     }
 }

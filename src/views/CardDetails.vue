@@ -11,12 +11,34 @@
                 <p class="artisteCarte">{{ card.illustrator }}</p>
             </div>
             <div class="infos">
-                <h2>{{ card.name }}</h2>
+                <div class="headerCarte">
+                    <div class="nomCarte">
+                        <h2>{{ card.name }}</h2>
+                        <BoutonLike class="boutonLike" :cardId="card.id" />
+                    </div>
+                    <div v-if="card.type" class="typePokemon" :style="{ background: getTypeColor(card.type) }">
+                        <img :src="getTypeIcon(card.type)" :alt="card.type" class="type-icon-card" />
+                        <span>{{ card.type }}</span>
+                    </div>
+                </div>
+
                 <div class="statsCarte">
-                    <p><h3>Catégorie:</h3> {{ card.category || 'N/A' }}</p>
-                    <p><h3>Stade:</h3> {{ card.stage || 'N/A' }}</p>
-                    <p><h3>HP:</h3> {{ card.hp || 'N/A' }}</p>
-                    <p><h3>Rareté:</h3> {{ card.rarity || 'N/A' }}</p>
+                    <div class="stat">
+                        <span class="statTitle">Rareté:</span>
+                        <span class="statValue">{{ getRarityIcon(card.rarity) || 'N/A' }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="statTitle">Catégorie:</span>
+                        <span class="statValue">{{ card.category || 'N/A' }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="statTitle">Stade d'évolution:</span>
+                        <span class="statValue">{{ card.stage || 'N/A' }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="statTitle">HP:</span>
+                        <span class="statValue">{{ card.hp || 'N/A' }}</span>
+                    </div>
                 </div>
 
                 <div v-if="card.abilities && card.abilities.length > 0" class="abilitesCarte">
@@ -29,25 +51,36 @@
 
                 <div v-if="card.attacks && card.attacks.length > 0" class="attaquesCarte">
                     <h3>Attaques</h3>
-                    <div v-for="attack in card.attacks" :key="attack.name" class="attaque">
-                        <h4>{{ attack.name }}</h4>
-                        <p><strong>Dégâts:</strong> {{ attack.damage || 'N/A' }}</p>
-                        <p><strong>Description:</strong> {{ attack.text }}</p>
+
+                    <div v-for="attack in card.attacks" :key="attack.name" class="attaque" :style="{ '--attaque-color': getTypeColor(card.type) }">
+                        <div class="attaqueHeader">
+                            <div class="attaqueCost">
+                                <img v-for="(cost, index) in attack.cost || []" :key="index" :src="getEnergyIcon(cost)"
+                                    class="energyIcon">
+                            </div>
+                            <h4>{{ attack.name }}</h4>
+                            <span class="damage">{{ attack.damage }}</span>
+                        </div>
+                        <p v-if="attack.effect">{{ attack.effect }}</p>
                     </div>
                 </div>
 
                 <div class="coutsCarte">
-                    <p v-if="card.weakness"><strong>Faiblesse:</strong> {{ card.weakness.type }}
-                        ({{ card.weakness.value }})</p>
-                    <p v-if="card.retreat !== undefined"><strong>Coût de retraite:</strong> {{ card.retreat }}</p>
+                    <div v-if="card.weakness" class="badgeType">
+                        <span>Faiblesse: </span>
+                        <img :src="getTypeIcon(card.weakness.type)" :alt="card.weakness.type" class="energyIcon" />
+                        <span>{{ card.weakness.type }} ({{ card.weakness.value }})</span>
+                    </div>
+
+                    <div v-if="card.retreat !== undefined" class="badgeType retreat">
+                        <span>Retreat: </span>
+                        <img v-for="n in card.retreat" :key="n" :src="getEnergyIcon('Colorless')" alt="Colorless" class="energyIcon"/>
+                    </div>
                 </div>
 
                 <div v-if="card.description" class="descriptionCarte">
                     <p><strong>Description:</strong> {{ card.description }}</p>
                 </div>
-            </div>
-            <div v-if="card.type" class="typePokemon">
-                {{ card.type }}
             </div>
         </div>
     </div>
@@ -55,9 +88,13 @@
 
 <script>
 import './CardDetails.css'
+import BoutonLike from '../components/BoutonLike.vue'
 
 export default {
     name: 'CardDetails',
+    components: {
+        BoutonLike
+    },
     data() {
         return {
             card: {
@@ -113,10 +150,10 @@ export default {
                     category: this.extractCategory(cardData),
                     stage: cardData.stage || '',
                     hp: cardData.hp || '',
-                    rarity: cardData.rarity?.name || '',
+                    rarity: cardData.rarity || '',
                     abilities: cardData.abilities || [],
                     attacks: cardData.attacks || [],
-                    weakness: cardData.weakness || null,
+                    weakness: this.extractWeakness(cardData),
                     resistance: cardData.resistance || null,
                     retreat: cardData.retreat || '',
                     description: cardData.description || '',
@@ -147,6 +184,87 @@ export default {
             if (cardData.supertype) return cardData.supertype
             if (cardData.category) return cardData.category
             return 'N/A'
+        },
+        extractWeakness(cardData) {
+            // La faiblesse peut être un objet ou un tableau
+            if (cardData.weaknesses) {
+                if (Array.isArray(cardData.weaknesses) && cardData.weaknesses.length > 0) {
+                    return cardData.weaknesses[0] || null
+                }
+            }
+            return null
+        },
+
+        getTypeIcon(type) {
+            const typeNames = {
+                'Grass': 'grass',
+                'Fire': 'fire',
+                'Water': 'water',
+                'Electric': 'electric',
+                'Psychic': 'psychic',
+                'Fighting': 'fighting',
+                'Darkness': 'dark',
+                'Metal': 'steel',
+                'Dragon': 'dragon',
+                'Colorless': 'normal'
+            }
+            const typeName = typeNames[type] || 'normal'
+            return `https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/${typeName}.svg`
+        },
+
+        getTypeColor(type) {
+
+            const colors = {
+                Grass: "#4CAF50",
+                Fire: "#F44336",
+                Water: "#2196F3",
+                Electric: "#FFD600",
+                Psychic: "#9C27B0",
+                Fighting: "#795548",
+                Darkness: "#424242",
+                Metal: "#9E9E9E",
+                Dragon: "#3F51B5",
+                Colorless: "#607D8B"
+            }
+
+            return colors[type] || "#555"
+        },
+
+        getEnergyIcon(type) {
+
+            const icons = {
+                Grass: "grass",
+                Fire: "fire",
+                Water: "water",
+                Electric: "electric",
+                Psychic: "psychic",
+                Fighting: "fighting",
+                Darkness: "dark",
+                Metal: "steel",
+                Dragon: "dragon",
+                Colorless: "normal"
+            }
+
+            const name = icons[type] || "normal"
+
+            return `https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/${name}.svg`
+        },
+
+        getRarityIcon(rarity) {
+            const rarityIcons = {
+                'None': 'PROMO',
+                'One Diamond': '◇',
+                'Two Diamond': '◇◇',
+                'Three Diamond': '◇◇◇',
+                'Four Diamond': '◇◇◇◇',
+                'One Star': '★',
+                'Two Star': '★★',
+                'Three Star': '★★★',
+                'One Shiny': '✷',
+                'Two Shiny': '✷✷',
+                'Crown': '🜲'
+            }
+            return rarityIcons[rarity] || rarity
         }
     }
 }

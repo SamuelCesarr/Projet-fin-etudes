@@ -10,7 +10,7 @@
                 <div v-for="set in sets" :key="set.id" class="set">
                     <router-link :to="{ name: 'SetDetailsDetail', params: { id: set.id } }">
                         <img v-if="set.images?.logo" :src="set.images.logo" alt="Logo de l'extension" class="logoSet" />
-                        <h2>{{ set.name }}</h2>
+                        <h2>{{ set.name }} <span class="cards-count">({{ set.cardsCount }} cartes)</span></h2>
                     </router-link>
                 </div>
             </div>
@@ -20,7 +20,7 @@
         <div v-else class="setCardsDetail">
             <div class="setHeader">
                 <router-link :to="{ name: 'SetDetails' }" class="backButton">← Retour aux extensions</router-link>
-                <h1>{{ currentSetName }}</h1>
+                <h1>{{ currentSetName }} ({{ setCards.length }} cartes)</h1>
             </div>
 
             <div v-if="loading" class="loading">Chargement des cartes...</div>
@@ -37,6 +37,7 @@
                             <p class="cardType">{{ card.category }}</p>
                         </div>
                     </router-link>
+                    <BoutonLike :cardId="card.id" />
                 </div>
             </div>
         </div>
@@ -45,8 +46,12 @@
 
 <script>
 import './SetDetails.css'
+import BoutonLike from '../components/BoutonLike.vue'
 export default {
     name: 'SetDetails',
+    components: {
+        BoutonLike
+    },
     data() {
         return {
             sets: [],
@@ -67,7 +72,7 @@ export default {
         }
     },
     watch: {
-        '$route.params.id': function(newId) {
+        '$route.params.id': function (newId) {
             if (newId) {
                 this.currentSetId = newId
                 this.fetchSetCards(newId)
@@ -82,6 +87,8 @@ export default {
             try {
                 this.loading = true
                 this.error = null
+
+                // Récupérer la liste des sets
                 const response = await fetch('https://api.tcgdex.net/v2/en/sets')
                 const data = await response.json()
 
@@ -91,7 +98,21 @@ export default {
                     return /^[ab]\d+[a-z]?$/.test(id) || /^p-[a-z]+$/.test(id)
                 })
 
-                this.sets = pocketSets
+                // Pour chaque set, récupérer le nombre de cartes via son endpoint
+                const setsWithCount = await Promise.all(pocketSets.map(async set => {
+                    try {
+                        const setDetailResp = await fetch(`https://api.tcgdex.net/v2/en/sets/${set.id}`)
+                        const setDetail = await setDetailResp.json()
+                        const cardsCount = setDetail.cards?.length || 0
+                        return { ...set, cardsCount }
+                    } catch (err) {
+                        console.warn(`Erreur récupération du set ${set.id}:`, err)
+                        return { ...set, cardsCount: 0 }
+                    }
+                }))
+
+                this.sets = setsWithCount
+
             } catch (err) {
                 this.error = err.message
             } finally {
@@ -110,36 +131,39 @@ export default {
                 const setData = await setResponse.json()
                 this.currentSetName = setData.name
 
-                // Récupérer TOUTES les cartes du jeu
+                // Récupérer TOUTES les cartes
                 const response = await fetch('https://api.tcgdex.net/v2/en/cards')
-                let allCards = await response.json()
-                
-                // Filtrer les cartes qui appartiennent à ce set (l'ID commence par le setId)
+                const allCards = await response.json()
+
+                // Filtrer les cartes du set
                 const setPrefix = `${setId}-`
-                const setCards = allCards.filter(card => card.id.startsWith(setPrefix))
+                const setCardsRaw = allCards.filter(card => card.id.startsWith(setPrefix))
+                console.log(`Cartes pour le set ${setId}:`, setCardsRaw.length)
 
-                console.log(`Cartes pour le set ${setId}:`, setCards.length)
+                // Mettre à jour le compteur dans la liste des sets
+                const index = this.sets.findIndex(s => s.id === setId)
+                if (index > -1) {
+                    this.sets[index].cardsCount = setCardsRaw.length
+                }
 
-                // Récupérer les détails complets de chaque carte en parallèle (par batch)
+                // Transformer les cartes pour l'affichage
                 const batchSize = 40
                 const transformed = []
-
-                for (let i = 0; i < setCards.length; i += batchSize) {
-                    const batch = setCards.slice(i, i + batchSize)
-                    const batchPromises = batch.map(card => 
-                        this.fetchCardDetails(card.id).then(fullCard => {
-                            return {
+                for (let i = 0; i < setCardsRaw.length; i += batchSize) {
+                    const batch = setCardsRaw.slice(i, i + batchSize)
+                    const batchPromises = batch.map(card =>
+                        this.fetchCardDetails(card.id)
+                            .then(fullCard => ({
                                 id: fullCard.id,
                                 name: fullCard.name,
                                 image: fullCard.image ? `${fullCard.image}/high.webp` : '',
                                 category: fullCard.supertype || fullCard.category || 'Unknown'
-                            }
-                        }).catch(err => {
-                            console.warn(`Erreur récupération ${card.id}:`, err)
-                            return null
-                        })
+                            }))
+                            .catch(err => {
+                                console.warn(`Erreur récupération ${card.id}:`, err)
+                                return null
+                            })
                     )
-
                     const results = await Promise.all(batchPromises)
                     transformed.push(...results.filter(r => r !== null))
                 }

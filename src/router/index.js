@@ -6,6 +6,7 @@ import DetailsLayout from "../layouts/DetailsLayout.vue";
 import TrainerDetails from "../views/TrainerDetails.vue";
 import CardDetails from "../views/CardDetails.vue";
 import SetDetails from "../views/SetDetails.vue";
+import Favorites from "../views/Favorites.vue";
 
 const routes = [
     {
@@ -18,6 +19,11 @@ const routes = [
                 path: "/",
                 name: "Home",
                 component: Home,
+            },
+            {
+                path: "/favorites",
+                name: "Favorites",
+                component: Favorites,
             }
         ],
     },

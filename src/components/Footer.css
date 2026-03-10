@@ -1,0 +1,47 @@
+.footer {
+    margin-top: 40px;
+    padding: 25px 20px;
+
+    background: #1a1a1a;
+    border-top: 2px solid #FED000;
+
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 900px;
+    margin: auto;
+}
+
+.footer-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: #FED000;
+    margin-bottom: 6px;
+}
+
+.footer-credit {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.footer-credit a {
+    color: #FED000;
+    font-weight: 600;
+}
+
+.footer-credit a:hover {
+    text-decoration: underline;
+}
+
+.footer-info {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #888;
+}
+
+.footer-year {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666;
+}

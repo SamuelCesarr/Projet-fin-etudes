@@ -1,42 +1,57 @@
 .filter-container {
     width: 100%;
-    padding: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
     background-color: #242424;
 }
 
+/* bouton filtre */
 .filter-toggle {
-    background-color: #FED000;
+    background: #FED000;
     color: #242424;
     border: none;
-    padding: 10px 20px; 
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    padding: 10px 24px;
+    border-radius: 5px;
+
     font-size: 14px;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+    transition: all 0.25s ease;
 }
 
 .filter-toggle:hover {
-    background-color: #ffed4e;
-    transform: scale(1.05);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
 }
 
+/* panneau */
 .filter-panel {
-    margin-top: 16px;
-    padding: 16px;
-    background-color: #1a1a1a;
-    border-radius: 8px;
-    border: 1px solid #444;
-    animation: slideDown 0.3s ease;
+    width: 100%;
+    max-width: 1100px;
+
+    margin-top: 18px;
+    padding: 20px;
+
+    background: #1a1a1a;
+
+    border-radius: 12px;
+    border: 1px solid #333;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+
+    animation: slideDown 0.25s ease;
 }
 
+/* animation */
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-12px);
     }
     to {
         opacity: 1;
@@ -44,77 +59,151 @@
     }
 }
 
+/* groupe */
 .filter-group {
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #444;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #333;
 }
 
 .filter-group:last-of-type {
-    margin-bottom: 16px;
     border-bottom: none;
 }
 
 .filter-group h4 {
     margin: 0 0 12px 0;
+
     color: #FED000;
-    font-size: 14px;
-    font-weight: 600;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
     text-transform: uppercase;
 }
 
+/* options */
 .filter-options {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 8px;
 }
 
+/* checkbox cachée */
+.filter-checkbox input {
+    display: none;
+}
+
+/* bouton */
 .filter-checkbox {
     display: flex;
     align-items: center;
-    cursor: pointer;
-    color: #fff;
+    justify-content: center;
+
+    padding: 8px 12px;
+
     font-size: 13px;
-    padding: 6px 8px;
-    border-radius: 4px;
+    color: #ddd;
+
+    border-radius: 8px;
+    border: 1px solid #444;
+
+    background: #2a2a2a;
+
+    cursor: pointer;
+
     transition: all 0.2s ease;
 }
 
+/* hover */
 .filter-checkbox:hover {
-    background-color: #333;
+    background: #333;
+    border-color: #FED000;
 }
 
-.filter-checkbox input {
-    margin-right: 8px;
-    cursor: pointer;
-    accent-color: #FED000;
-}
-
-.filter-reset {
-    width: 100%;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 10px;
+/* état sélectionné */
+.filter-checkbox input:checked + span {
+    background: #FED000;
+    color: #242424;
+    padding: 4px 8px;
     border-radius: 6px;
     font-weight: 600;
+}
+
+/* si span contient icône + texte */
+.filter-checkbox span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* bouton reset */
+.filter-reset {
+    margin-top: 10px;
+
+    width: 100%;
+
+    background: linear-gradient(135deg, #e74c3c, #ff6b5e);
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 11px;
+
+    color: white;
+    font-weight: 600;
+
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 14px;
+
+    transition: all 0.25s ease;
 }
 
 .filter-reset:hover {
-    background-color: #c0392b;
     transform: scale(1.02);
+    background: linear-gradient(135deg, #c0392b, #ff4f40);
 }
 
+/* Options de rareté avec icônes */
+.rarity-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 8px;
+}
+
+.rarity-checkbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.rarity-icon {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Options de type avec icônes */
+.type-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.type-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* mobile */
 @media (max-width: 768px) {
-    .filter-options {
-        grid-template-columns: 1fr;
-    }
 
     .filter-panel {
-        max-height: 60vh;
+        max-height: 65vh;
         overflow-y: auto;
+    }
+
+    .filter-options {
+        grid-template-columns: 1fr;
     }
 }

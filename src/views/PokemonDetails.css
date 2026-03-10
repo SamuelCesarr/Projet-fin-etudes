@@ -49,6 +49,7 @@
 
 /* CARTE */
 .card {
+  position: relative;
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
@@ -56,6 +57,15 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+}
+
+/* Bouton like en bas à droite de la carte, aligné avec les infos */
+.card .like-button {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+  top: auto;
+  z-index: 5;
 }
 
 .card:hover {
@@ -86,11 +96,17 @@
 /* INFOS */
 .cardInfo {
   padding: 12px;
-  text-align: center;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.cardTextInfo {
+  text-align: center;
+  width: 100%;
 }
 
 .cardInfo h3 {

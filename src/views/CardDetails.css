@@ -1,188 +1,252 @@
 .cardDetails {
-    padding: 20px;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: auto;
+    padding: 30px;
 }
 
 .cardDetails h1 {
     text-align: center;
-    margin-bottom: 40px;
-    font-size: 32px;
+    color: #FED000;
+    margin-bottom: 30px;
+}
+
+/* layout principal */
+.headerCarte{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items:center;
+    gap:10px;
+
+    margin-bottom:10px;
+
+    .nomCarte{
+        display:flex;
+        flex-direction: row;
+        align-items:center;
+        gap:10px;
+    }
+}
+
+.headerCarte h2{
+    margin:0;
+}
+
+/* type badge */
+
+.typePokemon {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 10px;
+    margin-right: 10px;
+    border-radius: 20px;
+
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.typePokemon span{
+    font-size: 13px;
+}
+
+.type-icon-card{
+    width: 22px;
+    height: 22px;
 }
 
 .infoCarte {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 40px;
-    align-items: start;
     position: relative;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 40px;
+
+    background: #1a1a1a;
+    border-radius: 14px;
+
+    padding: 30px;
+    border: 1px solid #333;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
-/* Colonne gauche - Image et artiste */
+.boutonLike {
+    position: relative;
+    top: 2px;
+}
+/* image carte */
+
 .art {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
 }
 
 .imageCarte {
     width: 100%;
-    height: auto;
-    background-color: #ddd;
-    border-radius: 8px;
-    object-fit: cover;
+    max-width: 260px;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.5),
+        0 0 10px rgba(254,208,0,0.2);
+
+    transition: transform 0.3s ease;
+}
+
+.imageCarte:hover {
+    transform: scale(1.05);
 }
 
 .artisteCarte {
-    text-align: center;
-    font-size: 14px;
-    color: #666;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #888;
 }
 
-/* Colonne droite - Infos */
-.infos {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
+/* infos */
 
 .infos h2 {
+    color: white;
     font-size: 28px;
-    margin: 0;
 }
 
-/* Stats générales */
+/* stats */
+
 .statsCarte {
-    background-color: #012B66;
-    padding: 15px;
-    border-radius: 6px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 10px;
+    margin-top: 15px;
 }
 
-.statsCarte p {
-    margin: 0;
-    font-size: 14px;
-    color: #FED000;
-}
-
-/* Capacités */
-.abilitesCarte {
-    background-color: #012B66;
-    padding: 15px;
+.stat {
+    background: #2a2a2a;
+    padding: 6px 12px;
     border-radius: 6px;
-}
-
-.abilitesCarte h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
+    border: 1px solid #444;
     font-size: 14px;
 }
+
+.statTitle {
+    color: #FED000;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.statValue {
+    color: #ddd;
+}
+
+/* sections */
+
+.abilitesCarte,
+.attaquesCarte {
+    margin-top: 25px;
+}
+
+.abilitesCarte h3,
+.attaquesCarte h3 {
+    color: #FED000;
+    margin-bottom: 10px;
+}
+
+/* abilities */
 
 .capacite {
+    background: #222;
+    padding: 12px;
+    border-radius: 8px;
     margin-bottom: 10px;
+    border-left: 4px solid #FED000;
 }
 
 .capacite h4 {
-    margin: 0 0 5px 0;
-    font-size: 13px;
+    margin-bottom: 5px;
 }
 
-.capacite p {
-    margin: 0;
-    font-size: 12px;
-}
-
-/* Attaques */
-.attaquesCarte {
-    background-color: #012B66;
-    padding: 15px;
-    border-radius: 6px;
-}
-
-.attaquesCarte h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #FED000;
-}
+/* attaques */
 
 .attaque {
-    margin-bottom: 15px;
+    background: #222;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--attaque-color, #ddd);
 }
 
-.attaque h4 {
-    margin: 0 0 5px 0;
-    font-size: 13px;
+.attaqueHeader{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
 }
 
-.attaque p {
-    margin: 3px 0;
-    font-size: 12px;
+.attaqueCost{
+    display:flex;
+    gap:4px;
 }
 
-/* Coûts et faiblesse */
+.energyIcon{
+    width:18px;
+    height:18px;
+}
+
+.damage{
+    margin-left:auto;
+    font-weight:bold;
+}
+
+/* couts */
+
 .coutsCarte {
-    background-color: #012B66;
-    padding: 15px;
-    border-radius: 6px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
-.coutsCarte p {
-    margin: 0;
+.badgeType {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
     font-size: 13px;
-}
-
-/* Description */
-.descriptionCarte {
-    margin-top: 10px;
-    font-size: 13px;
-}
-
-.descriptionCarte p {
-    margin: 0;
-}
-
-/* Type - boîte grise à droite */
-.typePokemon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #d0d0d0;
-    padding: 15px 25px;
-    border-radius: 6px;
     font-weight: bold;
-    font-size: 16px;
-    text-align: center;
-    min-width: 80px;
+    background: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444;
 }
 
-/* Gestion des erreurs */
-.error {
-    background-color: #fee;
-    color: #c00;
-    padding: 15px;
-    border-radius: 6px;
-    text-align: center;
+.badgeType.retreat {
+    background: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* description */
+
+.descriptionCarte {
+    margin-top: 20px;
+    padding: 12px;
+    background: #222;
+    border-radius: 8px;
+    border-left: 4px solid #FED000;
+}
+
+/* responsive */
+
+@media (max-width: 900px) {
+
     .infoCarte {
         grid-template-columns: 1fr;
     }
-    
-    .typePokemon {
-        position: static;
-        margin-top: 20px;
-    }
-    
-    .statsCarte,
-    .coutsCarte {
-        grid-template-columns: 1fr;
+
+    .art {
+        order: -1;
     }
 }

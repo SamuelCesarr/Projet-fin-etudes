@@ -5,6 +5,7 @@
         <BoutonFiltre
             :filters="filters" 
             :boosters="availableBoosters"
+            :setMap="setMap"
             :availableRarities="availableRarities"
             :availableTypes="availableTypes"
             :availableStages="availableStages"
@@ -26,9 +27,10 @@
                         <div class="cardImage" :style="{ backgroundImage: `url(${card.image})` }"></div>
                         <div class="cardInfo">
                             <h3>{{ card.name }}</h3>
-                            <p>{{ card.set }}</p>
+                            <p>{{ card.set }} - {{ card.setName }}</p>
                         </div>
                     </router-link>
+                    <BoutonLike :cardId="card.id" />
                 </div>
             </div>
         </div>
@@ -38,11 +40,13 @@
 <script>
 import './PokemonDetails.css'
 import BoutonFiltre from '../components/BoutonFiltre.vue'
+import BoutonLike from '../components/BoutonLike.vue'
 
 export default {
     name: 'TrainerDetails',
     components: {
-        BoutonFiltre
+        BoutonFiltre,
+        BoutonLike
     },
     data() {
         return {
@@ -50,6 +54,7 @@ export default {
             cards: [],
             loading: true,
             error: null,
+            setMap: {},
             availableBoosters: [],
             availableRarities: [],
             availableTypes: [],
@@ -123,12 +128,19 @@ export default {
                 const setsResponse = await fetch('https://api.tcgdex.net/v2/en/sets')
                 const sets = await setsResponse.json()
 
+                const setMap = {}
+                sets.forEach(set => {
+                    setMap[set.id.toUpperCase()] = set.name
+                })
+
+                this.setMap = setMap
+
                 const pocketSetIds = sets
                     .filter(set => {
                         const id = set.id?.toLowerCase() || ''
                         return /^[ab]\d+[a-z]?$/.test(id) || /^p-[a-z]+$/.test(id)
                     })
-                    .map(set => set.id)
+                    .map(set => set.id.toUpperCase())
 
                 console.log("Sets Pocket:", pocketSetIds)
 
@@ -167,6 +179,7 @@ export default {
                                 name: fullCard.name,
                                 image: fullCard.image ? `${fullCard.image}/high.webp` : '',
                                 set: setCode,
+                                setName: setMap[setCode] || setCode,
                                 rarity: fullCard.rarity || 'Common',
                                 types: fullCard.types || ['Colorless'],
                                 stage: fullCard.stage || 'N/A',
