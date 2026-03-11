@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import './Favorites.css'
 import './PokemonDetails.css'
 import BoutonLike from '../components/BoutonLike.vue'
 
@@ -40,9 +41,15 @@ export default {
         }
     },
     mounted() {
+        // Charger les favoris au montage du composant
         this.loadFavorites()
     },
     methods: {
+        /**
+         * Charge les cartes favorites et leurs détails
+         * Utilise localStorage pour les IDs et l'API TCGdex pour les détails
+         * Traite les cartes par batch (20 à la fois) pour optimiser les performances
+         */
         async loadFavorites() {
             try {
                 this.loading = true
@@ -55,7 +62,8 @@ export default {
                     return
                 }
 
-                // Récupérer les détails de chaque carte favorite
+                // Récupérer les détails de chaque carte favorite par batch
+                // Évite de surcharger l'API avec trop de requêtes simultanées
                 const batchSize = 20
                 const transformed = []
 
@@ -89,6 +97,9 @@ export default {
             }
         },
 
+        /**
+         * Récupère les IDs des cartes favorites depuis localStorage
+         */
         getLikedCards() {
             try {
                 const stored = localStorage.getItem('pokemon_favorites')
@@ -99,8 +110,12 @@ export default {
             }
         },
 
+        /**
+         * Récupère les détails complets d'une carte via l'API TCGdex
+         * Utilise sessionStorage comme cache pour éviter les requêtes répétées
+         * @param {string} cardId - ID de la carte TCGdex
+         */
         async fetchCardDetails(cardId) {
-            // Try sessionStorage cache first to reduce network calls
             try {
                 const key = `tcgdex_card_${cardId}`
                 const cached = sessionStorage.getItem(key)
@@ -108,7 +123,6 @@ export default {
                     return JSON.parse(cached)
                 }
             } catch (e) {
-                // ignore storage errors
             }
 
             const response = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`)
@@ -119,11 +133,14 @@ export default {
             try {
                 sessionStorage.setItem(`tcgdex_card_${cardId}`, JSON.stringify(data))
             } catch (e) {
-                // ignore storage quota errors
             }
             return data
         },
 
+        /**
+         * Gère les changements de statut "like" d'une carte
+         * Si une carte est retirée des favoris, recharge la liste
+         */
         onLikeChanged(data) {
             // Recharger les favoris quand une carte est retirée
             if (!data.isLiked) {
@@ -133,119 +150,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.favorites {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #242424;
-}
-
-.favorites h1 {
-  text-align: center;
-  font-size: 2rem;
-  color: #FED000;
-  background-color: #242424;
-  margin: 0;
-  padding: 20px 0;
-}
-
-.no-favorites {
-  text-align: center;
-  padding: 60px 20px;
-  color: #999;
-  font-size: 18px;
-  background-color: #242424;
-}
-
-.no-favorites p {
-  margin: 10px 0;
-}
-
-.cardsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 24px;
-  padding: 24px;
-  background-color: #242424;
-  width: 100%;
-}
-
-.card {
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-}
-
-.card a {
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.cardImage {
-  width: 100%;
-  padding-top: 140%;
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.3s ease;
-}
-
-.card:hover .cardImage {
-  transform: scale(1.05);
-}
-
-.cardInfo {
-  padding: 12px;
-  text-align: center;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.cardInfo h3 {
-  margin: 0 0 6px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: #FED000;
-  line-height: 1.3;
-}
-
-.cardInfo p {
-  margin: 0;
-  font-size: 12px;
-  color: #aaa;
-}
-
-.loading {
-  text-align: center;
-  padding: 40px 20px;
-  color: #FED000;
-  font-size: 18px;
-  background-color: #242424;
-}
-
-.error {
-  text-align: center;
-  padding: 40px 20px;
-  color: #ff6b6b;
-  font-size: 16px;
-  background-color: #242424;
-}
-</style>

@@ -34,14 +34,21 @@ export default {
         }
     },
     mounted() {
+        // Initialiser le compteur de favoris au chargement du composant
         this.updateFavoritesCount()
         // Écouter les changements dans localStorage
         window.addEventListener('storage', this.updateFavoritesCount)
     },
     beforeUnmount() {
+        // Nettoyer l'écouteur d'événements lors de la destruction du composant
+        // Évite les fuites mémoire
         window.removeEventListener('storage', this.updateFavoritesCount)
     },
     methods: {
+        /**
+         * Met à jour le compteur de favoris affiché dans le header
+         * Lit les favoris depuis localStorage et affiche leur nombre
+         */
         updateFavoritesCount() {
             try {
                 const stored = localStorage.getItem('pokemon_favorites')

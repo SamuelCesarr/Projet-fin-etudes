@@ -8,7 +8,10 @@ import CardDetails from "../views/CardDetails.vue";
 import SetDetails from "../views/SetDetails.vue";
 import Favorites from "../views/Favorites.vue";
 
+// Configuration des routes de l'application
+// Utilise Vue Router pour gérer la navigation entre les différentes vues
 const routes = [
+    // Route par défaut avec layout principal pour la page d'accueil et les favoris
     {
         path: "/*",
         name: "DefaultLayout",
@@ -27,6 +30,7 @@ const routes = [
             }
         ],
     },
+    // Route pour les détails des Pokémon avec layout détaillé
     {
         path: "/PokemonDetails",
         name: "PokemonDetailsLayout",
@@ -40,6 +44,7 @@ const routes = [
             }
         ],
     },
+    // Route pour les détails des Trainers avec layout détaillé
     {
         path: "/TrainerDetails",
         name: "TrainerDetailsLayout",
@@ -53,6 +58,7 @@ const routes = [
             }
         ],
     },
+    // Route pour les détails des cartes individuelles
     {
         path: "/CardDetails",
         name: "CardLayout",
@@ -66,6 +72,7 @@ const routes = [
             }
         ],
     },
+    // Route pour les extensions (sets) et leurs cartes
     {
         path: "/set",
         name: "SetLayout",
@@ -85,6 +92,7 @@ const routes = [
     }
 ];
 
+// Création du router avec historique basé sur l'URL
 const router = createRouter({
     history: createWebHistory('/Projet-fin-etudes/'),
     routes,

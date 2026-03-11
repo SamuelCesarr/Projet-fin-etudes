@@ -106,7 +106,8 @@ export default {
     },
     data() {
         return {
-            showFilters: false,
+            showFilters: false, // État du panneau de filtres (ouvert/fermé)
+            // Copie locale des filtres pour éviter les mises à jour directes des props
             localFilters: JSON.parse(JSON.stringify(this.filters || {
                 rarities: [], types: [], stages: [], isEx: false, isMega: false, boosters: []
             })),
@@ -114,6 +115,10 @@ export default {
         }
     },
     computed: {
+        /**
+         * Retourne les raretés disponibles triées dans l'ordre correct
+         * Transforme les raretés dynamiques en ordre de rareté
+         */
         rarities() {
             const rarityOrder = ['None', 'One Diamond', 'Two Diamond', 'Three Diamond', 'Four Diamond', 'One Star', 'Two Star', 'Three Star', 'One Shiny', 'Two Shiny', 'Crown']
             if (this.availableRarities.length > 0) {
@@ -125,11 +130,18 @@ export default {
             }
             return rarityOrder
         },
+        /**
+         * Retourne les types disponibles
+         * Convertit 'Lightning' en 'Electric' pour compatibilité
+         */
         types() {
             return this.availableTypes.length > 0
                 ? this.availableTypes.map(t => t === 'Lightning' ? 'Electric' : t)
                 : ['Grass', 'Fire', 'Water', 'Electric', 'Psychic', 'Fighting', 'Darkness', 'Metal', 'Dragon', 'Colorless']
         },
+        /**
+         * Retourne les stades d'évolution disponibles triés
+         */
         stages() {
             return this.availableStages.length > 0
                 ? this.availableStages.sort()
@@ -137,14 +149,16 @@ export default {
         }
     },
     watch: {
+        // Surveille les changements des filtres provenant du parent
         filters: {
             deep: true,
             handler(newVal) {
-                // Prop update coming from parent: copy without re-emitting
+                // Mise à jour des props provenant du parent: copier sans ré-émettre
                 this.suppressEmit = true
                 this.localFilters = { ...newVal, types: newVal.types.map(t => t === 'Lightning' ? 'Electric' : t) }
             }
         },
+        // Surveille les changements locaux des filtres
         localFilters: {
             deep: true,
             handler(newVal) {
@@ -152,16 +166,23 @@ export default {
                     this.suppressEmit = false
                     return
                 }
-                // Emit only when user changes localFilters
+                // Émettre seulement quand l'utilisateur change les filtres
                 const mappedFilters = { ...newVal, types: newVal.types.map(t => t === 'Electric' ? 'Lightning' : t) }
                 this.$emit('filters-changed', JSON.parse(JSON.stringify(mappedFilters)))
             }
         }
     },
     methods: {
+        /**
+         * Bascule l'affichage du panneau de filtres
+         */
         toggleFilters() {
             this.showFilters = !this.showFilters
         },
+        /**
+         * Réinitialise tous les filtres à leurs valeurs par défaut
+         * Émet l'événement 'reset-filters' vers le parent
+         */
         resetFilters() {
             this.localFilters = {
                 rarities: [], types: [], stages: [], isEx: false, isMega: false, boosters: []
@@ -169,6 +190,10 @@ export default {
             this.$emit('reset-filters')
             this.showFilters = false
         },
+        /**
+         * Convertit les noms de rareté en symboles visuels
+         * @param {string} rarity - Nom de la rareté
+         */
         getRarityIcon(rarity) {
             const rarityIcons = {
                 'None': 'None',
@@ -185,6 +210,10 @@ export default {
             }
             return rarityIcons[rarity] || rarity
         },
+        /**
+         * Retourne l'URL de l'icône du type Pokémon
+         * @param {string} type - Type du Pokémon
+         */
         getTypeIcon(type) {
             const typeNames = {
                 'Grass': 'grass',

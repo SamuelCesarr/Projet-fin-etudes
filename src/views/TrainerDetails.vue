@@ -53,15 +53,15 @@ export default {
     },
     data() {
         return {
-            allCards: [],
+            allCards: [], // Toutes les cartes Trainer Pocket chargées
             cards: [],
-            loading: true,
-            error: null,
-            setMap: {},
-            availableBoosters: [],
-            availableRarities: [],
-            availableTypes: [],
-            availableStages: [],
+            loading: true, // État du chargement des données
+            error: null, // Message d'erreur s'il y a un problème
+            setMap: {}, // Mapping des IDs de set vers leur nom
+            availableBoosters: [], // Liste des extensions disponibles
+            availableRarities: [], // Raretés disponibles dans les cartes loadés
+            availableTypes: [], // Types disponibles
+            availableStages: [], // Stades d'évolution disponibles
             filters: {
                 rarities: [],
                 types: [],
@@ -70,10 +70,14 @@ export default {
                 isMega: false,
                 boosters: []
             },
-            searchQuery: ""
+            searchQuery: "" // Texte de recherche saisi
         }
     },
     computed: {
+        /**
+         * Filtre les cartes selon les critères actuels
+         * Combine filtres de rareté, type, stade, boosters et recherche
+         */
         filteredCards() {
             return this.allCards.filter(card => {
                 // Filtre Recherche
@@ -131,9 +135,16 @@ export default {
         }
     },
     mounted() {
+        // Charger les cartes Trainer au montage du composant
         this.fetchTrainerCards()
     },
     methods: {
+        /**
+         * Récupère les cartes Trainer depuis l'API TCGdex
+         * - Filtre les cartes pour ne garder que celles de Pokémon Pocket
+         * - Charge les détails complets en parallèle par batch (40 à la fois)
+         * - Construit la liste complète avec informations de rareté, type, etc.
+         */
         async fetchTrainerCards() {
             try {
                 this.loading = true
@@ -241,8 +252,12 @@ export default {
             }
         },
 
+        /**
+         * Récupère les détails complets d'une carte depuis l'API TCGdex
+         * Utilise sessionStorage comme cache pour réduire les appels réseau
+         * @param {string} cardId - ID de la carte
+         */
         async fetchCardDetails(cardId) {
-            // Try sessionStorage cache first to reduce network calls
             try {
                 const key = `tcgdex_card_${cardId}`
                 const cached = sessionStorage.getItem(key)
@@ -250,7 +265,7 @@ export default {
                     return JSON.parse(cached)
                 }
             } catch (e) {
-                // ignore storage errors
+
             }
 
             const response = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`)
@@ -266,6 +281,9 @@ export default {
             return data
         },
 
+        /**
+         * Réinitialise tous les filtres à leurs valeurs par défaut
+         */
         resetFilters() {
             this.filters = {
                 rarities: [],
@@ -278,10 +296,18 @@ export default {
         }
         ,
 
+        /**
+         * Met à jour les filtres locaux depuis le composant enfant BoutonFiltre
+         * @param {Object} newFilters - Nouveaux filtres depuis BoutonFiltre
+         */
         onFiltersChanged(newFilters) {
             this.filters = Object.assign({}, newFilters)
         },
 
+        /**
+         * Extrait les options de filtre disponibles depuis les cartes chargées
+         * Construit les listes de raretés, types et stades uniques
+         */
         extractFilterOptions() {
             const rarities = new Set()
             const types = new Set()
@@ -300,6 +326,11 @@ export default {
             this.availableStages = Array.from(stages)
         },
 
+        /**
+         * Met à jour la requête de recherche
+         * Déclenche le filtrage réactif des cartes
+         * @param {string} query - Texte saisi par l'utilisateur
+         */
         updateSearch(query) {
             this.searchQuery = query
         }

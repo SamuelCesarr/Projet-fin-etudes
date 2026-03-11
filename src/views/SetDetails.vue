@@ -54,24 +54,28 @@ export default {
     },
     data() {
         return {
-            sets: [],
-            setCards: [],
-            loading: true,
-            error: null,
-            currentSetId: null,
-            currentSetName: null
+            sets: [], // Liste des extensions Pokémon Pocket
+            setCards: [], // Cartes de l'extension actuellement affichée
+            loading: true, // État du chargement
+            error: null, // Message d'erreur s'il y a un problème
+            currentSetId: null, // ID de l'extension actuellement visualisée
+            currentSetName: null // Nom de l'extension actuellement visualisée
         }
     },
     mounted() {
+        // Vérifier si une extension spécifique est demandée
         const setId = this.$route.params.id
         if (setId) {
+            // Charger directement les cartes de cette extension
             this.currentSetId = setId
             this.fetchSetCards(setId)
         } else {
+            // Charger la liste des extensions disponibles
             this.fetchSets()
         }
     },
     watch: {
+        // Surveiller les changements de paramètre de route pour charger une autre extension
         '$route.params.id': function (newId) {
             if (newId) {
                 this.currentSetId = newId
@@ -83,6 +87,11 @@ export default {
         }
     },
     methods: {
+        /**
+         * Récupère la liste des extensions Pokémon Pocket depuis l'API TCGdex
+         * Filtre les sets pour garder uniquement les Pocket
+         * Récupère aussi le nombre de cartes pour chaque set
+         */
         async fetchSets() {
             try {
                 this.loading = true
@@ -120,6 +129,14 @@ export default {
             }
         },
 
+        /**
+         * Récupère les cartes d'une extension spécifique
+         * - Récupère les infos du set (nom, etc.)
+         * - Récupère TOUTES les cartes disponibles
+         * - Filtre par préfixe du set ID
+         * - Charge les détails complets en parallèle par batch
+         * @param {string} setId - ID de l'extension à charger
+         */
         async fetchSetCards(setId) {
             try {
                 this.loading = true
@@ -182,8 +199,12 @@ export default {
             }
         },
 
+        /**
+         * Récupère les détails complets d'une carte depuis l'API TCGdex
+         * Utilise sessionStorage comme cache pour réduire les appels réseau
+         * @param {string} cardId - ID de la carte
+         */
         async fetchCardDetails(cardId) {
-            // Try sessionStorage cache first to reduce network calls
             try {
                 const key = `tcgdex_card_${cardId}`
                 const cached = sessionStorage.getItem(key)
@@ -191,7 +212,7 @@ export default {
                     return JSON.parse(cached)
                 }
             } catch (e) {
-                // ignore storage errors
+                
             }
 
             const response = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`)
