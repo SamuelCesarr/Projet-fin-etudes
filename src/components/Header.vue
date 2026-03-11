@@ -1,26 +1,36 @@
 <template>
-    <nav>
-        <ul>
-            <li><router-link :to="{ name: 'Home' }">Accueil</router-link></li>
-            <li><router-link :to="{ name: 'PokemonDetails', params: { id: 1 } }">Pokémon</router-link></li>
-            <li><router-link :to="{ name: 'TrainerDetails', params: { id: 1 } }">Trainers</router-link></li>
-            <li><router-link :to="{ name: 'SetDetails' }">Extensions</router-link></li>
-            <li><router-link :to="{ name: 'Favorites' }">
-                Favoris
-                <span v-if="favoritesCount > 0" >({{ favoritesCount }})</span>
-            </router-link></li>
-        </ul>
-    </nav>
+    <header class="header">
+        <div class="logo">
+            <router-link to="/">
+                <img :src="logo" alt="Logo Pokémon Library" />
+            </router-link>
+        </div>
+
+        <nav>
+            <ul>
+                <li><router-link :to="{ name: 'Home' }">Accueil</router-link></li>
+                <li><router-link :to="{ name: 'PokemonDetails', params: { id: 1 } }">Pokémon</router-link></li>
+                <li><router-link :to="{ name: 'TrainerDetails', params: { id: 1 } }">Trainers</router-link></li>
+                <li><router-link :to="{ name: 'SetDetails' }">Extensions</router-link></li>
+                <li><router-link :to="{ name: 'Favorites' }">
+                        Favoris
+                        <span v-if="favoritesCount > 0">({{ favoritesCount }})</span>
+                    </router-link></li>
+            </ul>
+        </nav>
+    </header>
 </template>
 
 <script>
 import './Header.css'
+import logo from '../assets/logo.png'
 
 export default {
     name: 'Header',
     data() {
         return {
-            favoritesCount: 0
+            favoritesCount: 0,
+            logo
         }
     },
     mounted() {

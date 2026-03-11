@@ -12,6 +12,7 @@
             @reset-filters="resetFilters"
             @filters-changed="onFiltersChanged"
         />
+        <BarreRecherche @search="updateSearch" />
 
         <div v-if="loading" class="loading">Chargement...</div>
 
@@ -41,12 +42,14 @@
 import './PokemonDetails.css'
 import BoutonFiltre from '../components/BoutonFiltre.vue'
 import BoutonLike from '../components/BoutonLike.vue'
+import BarreRecherche from '../components/BarreRecherche.vue';
 
 export default {
     name: 'TrainerDetails',
     components: {
         BoutonFiltre,
-        BoutonLike
+        BoutonLike,
+        BarreRecherche
     },
     data() {
         return {
@@ -66,12 +69,25 @@ export default {
                 isEx: false,
                 isMega: false,
                 boosters: []
-            }
+            },
+            searchQuery: ""
         }
     },
     computed: {
         filteredCards() {
-            return this.cards.filter(card => {
+            return this.allCards.filter(card => {
+                // Filtre Recherche
+                if (this.searchQuery) {
+                    const query = this.searchQuery.toLowerCase()
+
+                    if (
+                        !card.name.toLowerCase().includes(query) &&
+                        !card.setName.toLowerCase().includes(query)
+                    ) {
+                        return false
+                    }
+                }
+
                 // Filtre Rareté
                 if (this.filters.rarities.length > 0) {
                     if (!this.filters.rarities.includes(card.rarity)) {
@@ -282,6 +298,10 @@ export default {
             this.availableRarities = Array.from(rarities)
             this.availableTypes = Array.from(types)
             this.availableStages = Array.from(stages)
+        },
+
+        updateSearch(query) {
+            this.searchQuery = query
         }
     }
 }
