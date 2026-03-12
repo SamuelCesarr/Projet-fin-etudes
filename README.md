@@ -1,6 +1,6 @@
-Projet : Application Web Pokémon TCG
-Auteur : Samuel César
-Repository : https://github.com/SamuelCesarr/Projet-fin-etudes
+# Projet : Application Web Pokémon TCG
+- Auteur : Samuel César
+- Repository : https://github.com/SamuelCesarr/Projet-fin-etudes
 
 ----------------------------------------------------
 1. LISTE DES FICHIERS SOURCES CRÉÉS (ordre décroissant
