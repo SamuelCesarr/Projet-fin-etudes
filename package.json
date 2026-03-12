@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://samuelcesarr.github.io/Projet-fin-etudes/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
