@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import PokemonDetails from "../views/PokemonDetails.vue";
 import DefaultLayout from "../layouts/DefaultLayout.vue";
@@ -13,18 +13,16 @@ import Favorites from "../views/Favorites.vue";
 const routes = [
     // Route par défaut avec layout principal pour la page d'accueil et les favoris
     {
-        path: "/*",
-        name: "DefaultLayout",
+        path: "/",
         component: DefaultLayout,
-        redirect: "/",
         children: [
             {
-                path: "/",
+                path: "",
                 name: "Home",
                 component: Home,
             },
             {
-                path: "/favorites",
+                path: "favorites",
                 name: "Favorites",
                 component: Favorites,
             }
@@ -94,7 +92,7 @@ const routes = [
 
 // Création du router avec historique basé sur l'URL
 const router = createRouter({
-    history: createWebHistory('/Projet-fin-etudes/'),
+    history: createWebHashHistory('/Projet-fin-etudes/'),
     routes,
 });
 
