@@ -98,26 +98,18 @@ export default {
                 this.error = null
 
                 // Récupérer la liste des sets
-                const response = await fetch('https://api.tcgdex.net/v2/en/sets')
-                const data = await response.json()
+                const sets = await this.fetchSetsWithCache()
 
                 // Filtrer seulement les sets Pocket
-                const pocketSets = data.filter(set => {
+                const pocketSets = sets.filter(set => {
                     const id = set.id?.toLowerCase() || ''
                     return /^[ab]\d+[a-z]?$/.test(id) || /^p-[a-z]+$/.test(id)
                 })
 
                 // Pour chaque set, récupérer le nombre de cartes via son endpoint
-                const setsWithCount = await Promise.all(pocketSets.map(async set => {
-                    try {
-                        const setDetailResp = await fetch(`https://api.tcgdex.net/v2/en/sets/${set.id}`)
-                        const setDetail = await setDetailResp.json()
-                        const cardsCount = setDetail.cards?.length || 0
-                        return { ...set, cardsCount }
-                    } catch (err) {
-                        console.warn(`Erreur récupération du set ${set.id}:`, err)
-                        return { ...set, cardsCount: 0 }
-                    }
+                const setsWithCount = pocketSets.map(set =>({
+                    ...set,
+                    cardsCount: set.cardCount?.total || 0
                 }))
 
                 this.sets = setsWithCount
@@ -127,6 +119,45 @@ export default {
             } finally {
                 this.loading = false
             }
+        },
+
+        async fetchSetsWithCache() {
+            const cacheKey = "tcgdex_sets"
+            const cacheDuration = 1000 * 60 * 60 * 24 // 24h
+
+            try {
+                const cached = sessionStorage.getItem(cacheKey)
+
+                if (cached) {
+                    const parsed = JSON.parse(cached)
+
+                    if (Date.now() - parsed.timestamp < cacheDuration) {
+                        console.log("Sets depuis cache")
+                        return parsed.data
+                    } else {
+                        console.log("Cache sets expiré")
+                        sessionStorage.removeItem(cacheKey)
+                    }
+                }
+            } catch (e) {
+                console.warn("Erreur lecture cache sets", e)
+            }
+
+            // Fetch API si pas de cache
+            console.log("Fetch sets API")
+            const response = await fetch('https://api.tcgdex.net/v2/en/sets')
+            const sets = await response.json()
+
+            try {
+                sessionStorage.setItem(cacheKey, JSON.stringify({
+                    timestamp: Date.now(),
+                    data: sets
+                }))
+            } catch (e) {
+                console.warn("Erreur sauvegarde cache sets", e)
+            }
+
+            return sets
         },
 
         /**
@@ -212,7 +243,7 @@ export default {
                     return JSON.parse(cached)
                 }
             } catch (e) {
-                
+
             }
 
             const response = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`)

@@ -141,10 +141,41 @@ export default {
          * - Construit la liste complète avec informations de rareté, type, etc.
          */
         async fetchPokemonCards() {
+            const cacheKey = `tcgdex_pokemon_cards`
+
             try {
                 this.loading = true
                 this.error = null
                 this.allCards = []
+
+                // Cache pour éviter de recharger les données à chaque visite
+                const cache = sessionStorage.getItem(cacheKey)
+
+                if (cache) {
+                    console.log("Chargement depuis le cache")
+
+                    const parsed = JSON.parse(cache)
+
+                    const cacheDuration = 1000 * 60 * 60 // 1 heure
+
+                    if (Date.now() - parsed.timestamp < cacheDuration) {
+                        console.log("Cache valide")
+
+                        this.allCards = parsed.data.allCards
+                        this.cards = parsed.data.allCards
+                        this.setMap = parsed.data.setMap
+                        this.availableBoosters = parsed.data.availableBoosters
+                        this.availableRarities = parsed.data.availableRarities
+                        this.availableTypes = parsed.data.availableTypes
+                        this.availableStages = parsed.data.availableStages
+
+                        this.loading = false
+                        return
+                    } else {
+                        console.log("Cache expiré")
+                        sessionStorage.removeItem(cacheKey)
+                    }
+                }
 
                 // Récupérer sets Pocket
                 const setsResponse = await fetch('https://api.tcgdex.net/v2/en/sets')
@@ -208,7 +239,7 @@ export default {
                                 stage: fullCard.stage || 'Basic',
                                 isEx: fullCard.name.includes(' ex') || fullCard.name.includes(' EX'),
                                 isMega: fullCard.name.includes('Mega ') || fullCard.name.includes('M '),
-                                fullData: fullCard
+                                //fullData: fullCard
                             }
                         }).catch(err => {
                             console.warn(`Erreur récupération ${card.id}:`, err)
@@ -246,10 +277,31 @@ export default {
                     this.error = "Aucune carte trouvée."
                 }
 
-            } catch (err) {
+            }
+            catch (err) {
                 console.error("Erreur récupération:", err)
                 this.error = `Erreur: ${err.message}`
-            } finally {
+            }
+
+            // Sauvegarder dans le cache pour les prochaines visites
+            try {
+                sessionStorage.setItem(cacheKey, JSON.stringify({
+                    timestamp: Date.now(),
+                    data: {
+                        allCards: this.allCards,
+                        setMap: this.setMap,
+                        availableBoosters: this.availableBoosters,
+                        availableRarities: this.availableRarities,
+                        availableTypes: this.availableTypes,
+                        availableStages: this.availableStages
+                    }
+                }))
+                console.log("Cache sauvegardé")
+            } catch (e) {
+                console.warn("Erreur cache:", e)
+            }
+
+            finally {
                 this.loading = false
             }
         },
